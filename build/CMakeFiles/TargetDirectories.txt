@@ -1,0 +1,5 @@
+C:/Users/fleek/CProjects/lib-tasks/build/CMakeFiles/tasks.dir
+C:/Users/fleek/CProjects/lib-tasks/build/CMakeFiles/list.dir
+C:/Users/fleek/CProjects/lib-tasks/build/CMakeFiles/libtasks.dir
+C:/Users/fleek/CProjects/lib-tasks/build/CMakeFiles/edit_cache.dir
+C:/Users/fleek/CProjects/lib-tasks/build/CMakeFiles/rebuild_cache.dir

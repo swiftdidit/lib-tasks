@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "libtasks.h": "c",
+        "liblist.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c",
+        "cstdlib": "c",
+        "signal.h": "c",
+        "stdlib.h": "c",
+        "unistd.h": "c",
+        "pthread_unistd.h": "c",
+        "types.h": "c",
+        "compare": "c",
+        "type_traits": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
+}
