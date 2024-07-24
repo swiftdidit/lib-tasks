@@ -10,7 +10,7 @@
 
 #include "liblist.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 typedef enum TaskType {
   TASK_TYPE_DEFAULT = 0,
