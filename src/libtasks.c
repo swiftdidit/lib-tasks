@@ -5,8 +5,11 @@ TaskManager *taskManager;
 
 void InitTaskManager(void) {
   taskManager = (TaskManager *)malloc(sizeof(TaskManager));
+  InitTimerManager();
+
   taskManager->tasks = NewList(NULL);
   taskManager->threads = NewList(NULL);
+  taskManager->timerManager = timerManager;
 
   if (atexit(cleanup) != 0) {
     fprintf(
@@ -31,32 +34,40 @@ static void task_runner(Task *task) {
             "'Task *' in library 'libtasks'.\n");
     free(task);
   } else {
-    printf("Created a new thread\n");
     ListAdd(taskManager->threads, &task->pid);
+
+#if DEBUG_MODE == true
+    printf("Created a new thread\n");
+#endif  // DEBUG_MODE
   }
 
   switch (task->type) {
     case TASK_TYPE_INTERVAL:
-      struct timespec tsInterval;
-      tsInterval.tv_sec = task->timings.interval / 1000;
-      tsInterval.tv_nsec = (task->timings.interval % 1000) * 1000000;
+      Timer *intervalTimer = NewTimer(task->timings.interval);
+      StartTimer(intervalTimer);
 
       while (!task->isCanceled) {
-        task->ticks += 1;
-        task->callback(task);
+        if (TimerDone(*intervalTimer)) {
+          StartTimer(intervalTimer);
 
-        nanosleep(&tsInterval, NULL);
+          task->ticks += 1;
+          task->callback(task);
+        }
       }
+
       break;
     case TASK_TYPE_DELAY:
-      task->ticks += 1;
+      Timer *delayTimer = NewTimer(task->timings.delay);
+      StartTimer(delayTimer);
 
-      struct timespec tsDelay;
-      tsDelay.tv_sec = task->timings.interval / 1000;
-      tsDelay.tv_nsec = (task->timings.interval % 1000) * 1000000;
-      nanosleep(&tsDelay, NULL);
+      while (!task->isCanceled) {
+        if (TimerDone(*delayTimer)) {
+          task->ticks += 1;
 
-      task->callback(task);
+          task->callback(task);
+          break;
+        }
+      }
       break;
     case TASK_TYPE_DEFAULT:
     default:
@@ -107,7 +118,8 @@ static Task *create_task(Task *task, TaskType type,
 
   if (task == NULL) {
     printf(
-        "TASKException Error: Failed to allocate memory for struct 'Task *' in "
+        "TASKException Error: Failed to allocate memory for struct 'Task *' "
+        "in "
         "'libtasks' library!\n");
     return NULL;
   }

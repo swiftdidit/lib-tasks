@@ -9,8 +9,9 @@
 #include <unistd.h>
 
 #include "liblist.h"
+#include "libtimer.h"
 
-#define DEBUG_MODE false
+#define DEBUG_MODE true
 
 typedef enum TaskType {
   TASK_TYPE_DEFAULT = 0,
@@ -34,6 +35,7 @@ typedef struct Task {
 } Task;
 
 typedef struct TaskManager {
+  TimerManager *timerManager;
   List *tasks;    // List<Task *>
   List *threads;  // List<pthread_t *>
 } TaskManager;
@@ -59,6 +61,13 @@ static inline void cleanup(void) {
   ListFreeMemory(taskManager->threads);
   free(taskManager);
 
+  for (int i = 0; i < timerManager->totalTimers; i++) {
+    free(timerManager->timers[i]);
+  }
+
+  free(timerManager->timers);
+  free(timerManager);
+
 #if DEBUG_MODE == true
   printf("\n End  of  Program\n Debug -> cleaned up successfully\n");
 #endif  // DEBUG_MODE
@@ -69,15 +78,16 @@ void InitTaskManager(void);
 /* Create a new Task * struct and add it to the TaskManager list of tasks, each
 Task will run on it's own thread.
 
-@param Task *task: A pointer to the Task structure that will be initialized if not already,
-to add to the task list.
+@param Task *task: A pointer to the Task structure that will be initialized if
+not already, to add to the task list.
 
 @param TaskType type: An enum value indicating the type of the task (e.g.,
 default, interval, delay).
 
 @param void (*callback)(struct Task *reference): A function pointer to the
 callback function that will be executed when the task is run. The callback
-function takes a Task structure pointer as an argument for useful referencing inside the callback.
+function takes a Task structure pointer as an argument for useful referencing
+inside the callback.
 
 @param long optionalValue: An optional value that can be used to specify
 additional parameters for the task (e.g.,

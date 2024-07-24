@@ -12,7 +12,8 @@
         "pthread_unistd.h": "c",
         "types.h": "c",
         "compare": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "libtimer.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

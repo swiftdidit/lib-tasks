@@ -98,13 +98,44 @@ build liblist.a: C_STATIC_LIBRARY_LINKER__list_ CMakeFiles/list.dir/src/liblist.
   TARGET_PDB = list.a.dbg
 
 # =============================================================================
+# Object build statements for STATIC_LIBRARY target timer
+
+
+#############################################
+# Order-only phony target for timer
+
+build cmake_object_order_depends_target_timer: phony || .
+
+build CMakeFiles/timer.dir/src/libtimer.c.obj: C_COMPILER__timer_unscanned_ C$:/Users/fleek/CProjects/lib-tasks/src/libtimer.c || cmake_object_order_depends_target_timer
+  DEP_FILE = CMakeFiles\timer.dir\src\libtimer.c.obj.d
+  FLAGS = -std=gnu11
+  INCLUDES = -IC:/Users/fleek/CProjects/lib-tasks/include
+  OBJECT_DIR = CMakeFiles\timer.dir
+  OBJECT_FILE_DIR = CMakeFiles\timer.dir\src
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target timer
+
+
+#############################################
+# Link the static library libtimer.a
+
+build libtimer.a: C_STATIC_LIBRARY_LINKER__timer_ CMakeFiles/timer.dir/src/libtimer.c.obj
+  OBJECT_DIR = CMakeFiles\timer.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  TARGET_FILE = libtimer.a
+  TARGET_PDB = timer.a.dbg
+
+# =============================================================================
 # Object build statements for EXECUTABLE target libtasks
 
 
 #############################################
 # Order-only phony target for libtasks
 
-build cmake_object_order_depends_target_libtasks: phony || cmake_object_order_depends_target_list cmake_object_order_depends_target_tasks
+build cmake_object_order_depends_target_libtasks: phony || cmake_object_order_depends_target_list cmake_object_order_depends_target_tasks cmake_object_order_depends_target_timer
 
 build CMakeFiles/libtasks.dir/src/main.c.obj: C_COMPILER__libtasks_unscanned_ C$:/Users/fleek/CProjects/lib-tasks/src/main.c || cmake_object_order_depends_target_libtasks
   DEP_FILE = CMakeFiles\libtasks.dir\src\main.c.obj.d
@@ -121,8 +152,8 @@ build CMakeFiles/libtasks.dir/src/main.c.obj: C_COMPILER__libtasks_unscanned_ C$
 #############################################
 # Link the executable libtasks.exe
 
-build libtasks.exe: C_EXECUTABLE_LINKER__libtasks_ CMakeFiles/libtasks.dir/src/main.c.obj | libtasks.a liblist.a || liblist.a libtasks.a
-  LINK_LIBRARIES = libtasks.a  liblist.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+build libtasks.exe: C_EXECUTABLE_LINKER__libtasks_ CMakeFiles/libtasks.dir/src/main.c.obj | libtasks.a liblist.a libtimer.a || liblist.a libtasks.a libtimer.a
+  LINK_LIBRARIES = libtasks.a  liblist.a  libtimer.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\libtasks.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -163,6 +194,8 @@ build list: phony liblist.a
 
 build tasks: phony libtasks.a
 
+build timer: phony libtimer.a
+
 # =============================================================================
 # Folder targets.
 
@@ -171,7 +204,7 @@ build tasks: phony libtasks.a
 #############################################
 # Folder: C:/Users/fleek/CProjects/lib-tasks/build
 
-build all: phony libtasks.a liblist.a libtasks.exe
+build all: phony libtasks.a liblist.a libtimer.a libtasks.exe
 
 # =============================================================================
 # Built-in targets

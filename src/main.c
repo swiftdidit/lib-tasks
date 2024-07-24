@@ -37,17 +37,17 @@ int main() {
   //                  printf("Tick count: %d\n", ref->ticks);
   //                }), 0);
 
-  Task intervalTask = {
-      .type = TASK_TYPE_INTERVAL,
-      .callback = lambda(void, (struct Task * reference),
-                         {
-                           Task *ref = reference;
-                           printf("Task Interval is running...\n");
-                           printf("Tick count: %d\n", ref->ticks);
-                         }),
-      .timings.interval = 1000};
+  // Task intervalTask = {
+  //     .type = TASK_TYPE_INTERVAL,
+  //     .callback = lambda(void, (struct Task * reference),
+  //                        {
+  //                          Task *ref = reference;
+  //                          printf("Task Interval is running...\n");
+  //                          printf("Tick count: %d\n", ref->ticks);
+  //                        }),
+  //     .timings.interval = 1};
 
-  RunTask(&intervalTask);
+  // RunTask(&intervalTask);
 
   // Task intervalTask;
   // NewTask(&intervalTask, TASK_TYPE_INTERVAL,
@@ -70,9 +70,9 @@ int main() {
   //         lambda(void, (struct Task * reference),
   //                {
   //                  Task *ref = reference;
-  //                  printf("Async Delayed task has ran successfully...\n");
+  //                  printf("Async Delayed task has ran successfully after 3 seconds...\n");
   //                }),
-  //         2500);
+  //         3);
 
   printf("After cancel\n");
   printf(" Math test-> 4+4=%d\n", 4 + 4);
