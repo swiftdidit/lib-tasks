@@ -37,17 +37,17 @@ int main() {
   //                  printf("Tick count: %d\n", ref->ticks);
   //                }), 0);
 
-  // Task intervalTask = {
-  //     .type = TASK_TYPE_INTERVAL,
-  //     .callback = lambda(void, (struct Task * reference),
-  //                        {
-  //                          Task *ref = reference;
-  //                          printf("Task Interval is running...\n");
-  //                          printf("Tick count: %d\n", ref->ticks);
-  //                        }),
-  //     .timings.interval = 1};
+  Task intervalTask = {
+      .type = TASK_TYPE_INTERVAL,
+      .callback = lambda(void, (struct Task * reference),
+                         {
+                           Task *ref = reference;
+                           printf("Task Interval is running...\n");
+                           printf("Tick count: %d\n", ref->ticks);
+                         }),
+      .timings.interval = 1};
 
-  // RunTask(&intervalTask);
+  RunTask(&intervalTask);
 
   // Task intervalTask;
   // NewTask(&intervalTask, TASK_TYPE_INTERVAL,

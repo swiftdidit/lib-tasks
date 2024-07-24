@@ -11,7 +11,7 @@
 #include "liblist.h"
 #include "libtimer.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 typedef enum TaskType {
   TASK_TYPE_DEFAULT = 0,
@@ -36,6 +36,7 @@ typedef struct Task {
 
 typedef struct TaskManager {
   TimerManager *timerManager;
+  
   List *tasks;    // List<Task *>
   List *threads;  // List<pthread_t *>
 } TaskManager;
