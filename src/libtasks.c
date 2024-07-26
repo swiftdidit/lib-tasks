@@ -41,6 +41,8 @@ static void task_runner(Task *task) {
 #endif  // DEBUG_MODE
   }
 
+  void *retVal = NULL;
+
   switch (task->type) {
     case TASK_TYPE_INTERVAL:
       Timer *intervalTimer = NewTimer(task->timings.interval);
@@ -51,7 +53,7 @@ static void task_runner(Task *task) {
           StartTimer(intervalTimer);
 
           task->ticks += 1;
-          task->callback(task);
+          retVal = task->callback(task);
         }
       }
 
@@ -64,7 +66,7 @@ static void task_runner(Task *task) {
         if (TimerDone(*delayTimer)) {
           task->ticks += 1;
 
-          task->callback(task);
+          retVal = task->callback(task);
           break;
         }
       }
@@ -73,7 +75,7 @@ static void task_runner(Task *task) {
     default:
       while (!task->isCanceled) {
         task->ticks += 1;
-        task->callback(task);
+        retVal = task->callback(task);
       }
       break;
   }
@@ -81,6 +83,8 @@ static void task_runner(Task *task) {
 #if DEBUG_MODE == true
   printf("Task Runner exiting for task with ID: %lu\n", task->pid);
 #endif  // DEBUG_MODE
+
+  task->data.retVal = retVal;
 }
 
 static void cancel(Task *task) {
@@ -91,7 +95,11 @@ static void cancel(Task *task) {
 #endif  // DEBUG_MODE
 
   pthread_cancel(task->pid);
-  pthread_join(task->pid, NULL);
+
+  void *retVal;
+  pthread_join(task->pid, (void **)&retVal);
+
+  if (retVal != NULL) task->data.retVal = retVal;
 }
 
 // Debugging Utility Function
@@ -108,9 +116,11 @@ static char *getTaskName(TaskType type) {
 }
 
 static Task *create_task(Task *task, TaskType type,
-                         void (*callback)(struct Task *reference),
+                         void *(*callback)(struct Task *reference),
                          long optionalValue) {
-  task = (Task *)malloc(sizeof(Task));
+  if (task == NULL) {
+    task = (Task *)malloc(sizeof(Task));
+  }
 
 #if DEBUG_MODE == true
   printf("New Task\n");
@@ -140,7 +150,7 @@ static Task *create_task(Task *task, TaskType type,
 }
 
 void NewTask(Task *task, TaskType type,
-             void (*callback)(struct Task *reference), long optionalValue) {
+             void *(*callback)(struct Task *reference), long optionalValue) {
   task = (Task *)create_task(task, type, callback, optionalValue);
   ListAdd(taskManager->tasks, task);
 

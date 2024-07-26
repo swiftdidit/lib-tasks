@@ -9,49 +9,65 @@
 
 // Debugging Utility Function
 void handle_sigint(int sig) {
-  if (!isListEmpty(taskManager->tasks)) {
-    foreach (void *i, taskManager->tasks) {
-      Task *task = (Task *)i;
-      task->cancel(task);
-      free(task);
-    }
-
-    ListClear(taskManager->tasks);
-  }
 #if DEBUG_MODE == true
   printf("\nCaught signal %d (Ctrl+C). Cleaning up...\n", sig);
 #endif  // DEBUG_MODE
+
+  cleanup();
 }
 
 int main() {
   signal(SIGINT, handle_sigint);  // for debugging
   InitTaskManager();
 
-  // Task normalTask;
-  // NewTask(&normalTask, TASK_TYPE_DEFAULT,
-  //         lambda(void, (struct Task * reference),
+  // Task *normalTask = malloc(sizeof(Task));
+  // NewTask(normalTask, TASK_TYPE_DEFAULT,
+  //         lambda(void *, (struct Task * reference),
   //                {
   //                  Task *ref = reference;
 
   //                  printf("Task Default Runnable is running...\n");
   //                  printf("Tick count: %d\n", ref->ticks);
-  //                }), 0);
 
-  Task intervalTask = {
-      .type = TASK_TYPE_INTERVAL,
-      .callback = lambda(void, (struct Task * reference),
-                         {
-                           Task *ref = reference;
-                           printf("Task Interval is running...\n");
-                           printf("Tick count: %d\n", ref->ticks);
-                         }),
-      .timings.interval = 1};
+  //                  return NULL;
+  //                }),
+  //         0);
 
-  RunTask(&intervalTask);
+  // if (normalTask->data.retVal == NULL) {
+  //   printf("\nNormal Task Return Value -> NULL\n");
+  // } else {
+  //   printf("\nNormal Task Return Value (VALID) -> %p\n",
+  //   normalTask->data.retVal);
+  // }
 
-  // Task intervalTask;
-  // NewTask(&intervalTask, TASK_TYPE_INTERVAL,
-  //         lambda(void, (struct Task * reference),
+  // Task *intervalTask = malloc(sizeof(Task));
+  // intervalTask->type = TASK_TYPE_INTERVAL;
+  // intervalTask->callback = lambda(void *, (struct Task * reference), {
+  //   Task *ref = reference;
+  //   printf("Task Interval is running...\n");
+  //   printf("Tick count: %d\n", ref->ticks);
+
+  //   int *test = malloc(sizeof(int));
+  //   *test = 23 * 3;
+  //   printf("\nMath test-> %d\n", *test);
+
+  //   // if (ref->ticks % 5 == 0) {
+  //   //   printf("\nAttempting to cancel Task Interval\n");
+  //   //   ref->cancel(ref);
+  //   // }
+  //   return test;
+  // });
+
+  // intervalTask->timings.interval = 1;
+
+  // RunTask(intervalTask);
+  // printf("\nInterval Task Return Value -> %d\n",
+  //        *(int *)intervalTask->data.retVal);
+  // free(intervalTask->data.retVal);
+
+  // Task *intervalTask = malloc(sizeof(Task));
+  // NewTask(intervalTask, TASK_TYPE_INTERVAL,
+  //         lambda(void *, (struct Task * reference),
   //                {
   //                  Task *ref = reference;
 
@@ -62,15 +78,19 @@ int main() {
   //                    printf("\nAttempting to cancel Task Interval 2\n");
   //                    ref->cancel(ref);
   //                  }
-  //                }),
-  //         1000);
 
-  // Task delayTask;
-  // NewTask(&delayTask, TASK_TYPE_DELAY,
-  //         lambda(void, (struct Task * reference),
+  //                  return NULL;
+  //                }),
+  //         3);
+
+  // Task *delayTask = malloc(sizeof(Task));
+  // NewTask(delayTask, TASK_TYPE_DELAY,
+  //         lambda(void *, (struct Task * reference),
   //                {
   //                  Task *ref = reference;
-  //                  printf("Async Delayed task has ran successfully after 3 seconds...\n");
+  //                  printf("Async Delayed task has started...\n");
+
+  //                  return NULL;
   //                }),
   //         3);
 
