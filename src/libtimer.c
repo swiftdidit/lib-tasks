@@ -1,9 +1,9 @@
 #include "libtimer.h"
 
-TimerManager *timerManager;
+TaskTimerManager *taskTimerManager;
 
-Timer *NewTimer(double lifeTime) {
-  Timer *timer = malloc(sizeof(Timer));
+TaskTimer *NewTimer(double lifeTime) {
+  TaskTimer *timer = malloc(sizeof(TaskTimer));
   if (timer == NULL) {
     fprintf(stderr,
             "[MEMORY ERROR] Failed to allocate memory for "
@@ -14,24 +14,24 @@ Timer *NewTimer(double lifeTime) {
   timer->startTime = 0.0;
   timer->lifeTime = lifeTime;
 
-  if (timerManager->totalTimers >= timerManager->totalTimerCapacity) {
-    timerManager->totalTimerCapacity *= 2;
-    timerManager->timers =
-        realloc(timerManager->timers,
-                timerManager->totalTimerCapacity * sizeof(Timer *));
+  if (taskTimerManager->totalTimers >= taskTimerManager->totalTimerCapacity) {
+    taskTimerManager->totalTimerCapacity *= 2;
+    taskTimerManager->timers =
+        realloc(taskTimerManager->timers,
+                taskTimerManager->totalTimerCapacity * sizeof(TaskTimer *));
   }
 
-  timerManager->timers[timerManager->totalTimers] = timer;
-  timerManager->totalTimers += 1;
+  taskTimerManager->timers[taskTimerManager->totalTimers] = timer;
+  taskTimerManager->totalTimers += 1;
   return timer;
 }
 
 time_t current_time(void) {
-    timerManager->seconds = time(NULL);
+    taskTimerManager->seconds = time(NULL);
 }
 
-void StartTimer(Timer *timer) { timer->startTime = current_time(); }
+void StartTimer(TaskTimer *timer) { timer->startTime = current_time(); }
 
-bool TimerDone(Timer timer) { return GetElasped(timer) >= timer.lifeTime; }
+bool TimerDone(TaskTimer timer) { return GetElasped(timer) >= timer.lifeTime; }
 
-double GetElasped(Timer timer) { return current_time() - timer.startTime; }
+double GetElasped(TaskTimer timer) { return current_time() - timer.startTime; }

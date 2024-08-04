@@ -7,32 +7,32 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-typedef struct Timer {  // Represents a timer that can be used to schedule
+typedef struct TaskTimer {  // Represents a timer that can be used to schedule
                         // tasks. Useful for anything.
   double startTime;     // Start Time (seconds)
   double lifeTime;      // Lifetime (seconds)
-} Timer;
+} TaskTimer;
 
-typedef struct TimerManager {
-  Timer **timers;  // Create a new Timer with NewTimer()
+typedef struct TaskTimerManager {
+  TaskTimer **timers;  // Create a new Timer with NewTimer()
   time_t seconds;
 
   unsigned int totalTimers;         // total number of timers in memory
   unsigned int totalTimerCapacity;  // space allocated to Timers** array
-} TimerManager;
+} TaskTimerManager;
 
-extern TimerManager *timerManager;
+extern TaskTimerManager *taskTimerManager;
 
 static void InitTimerManager(void) {
-  timerManager = malloc(sizeof(TimerManager));
-  timerManager->totalTimerCapacity = 2;
+  taskTimerManager = malloc(sizeof(TaskTimerManager));
+  taskTimerManager->totalTimerCapacity = 2;
 
-  timerManager->timers =
-      malloc(timerManager->totalTimerCapacity * sizeof(Timer *));
-  timerManager->seconds = time(NULL);
-  timerManager->totalTimers = 0;
+  taskTimerManager->timers =
+      malloc(taskTimerManager->totalTimerCapacity * sizeof(TaskTimer *));
+  taskTimerManager->seconds = time(NULL);
+  taskTimerManager->totalTimers = 0;
 
-  if (timerManager->timers == NULL) {
+  if (taskTimerManager->timers == NULL) {
     fprintf(stderr,
             "[INIT MEMORY ERROR] Failed to allocate memory for Timers array\n");
     exit(EXIT_FAILURE);
@@ -40,12 +40,12 @@ static void InitTimerManager(void) {
 }
 
 
-Timer *NewTimer(double lifeTime);  // Create a new Timer
-void StartTimer(Timer *timer);     // Starts this Timer
+TaskTimer *NewTimer(double lifeTime);  // Create a new Timer
+void StartTimer(TaskTimer *timer);     // Starts this Timer
 bool TimerDone(
-    Timer timer);  // Check if this Timer has reached its 'lifetime' value
+    TaskTimer timer);  // Check if this Timer has reached its 'lifetime' value
 
-double GetElasped(Timer timer);  // Returns the elapsed time in seconds since
+double GetElasped(TaskTimer timer);  // Returns the elapsed time in seconds since
                                  // 'StartTimer()' was called
 time_t current_time(void);
 

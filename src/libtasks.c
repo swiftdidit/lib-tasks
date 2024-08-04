@@ -9,14 +9,16 @@ void InitTaskManager(void) {
 
   taskManager->tasks = NewList(NULL);
   taskManager->threads = NewList(NULL);
-  taskManager->timerManager = timerManager;
+  taskManager->taskTimerManager = taskTimerManager;
 
-  if (atexit(cleanup) != 0) {
+#if AT_EXIT_CLEANUP == TRUE
+  if (atexit(CleanupTasks) != 0) {
     fprintf(
         stderr,
         "Error: Unable to register #cleanup function in library 'libtasks'.\n");
     exit(EXIT_FAILURE);
   }
+#endif  // AT_EXIT_CLEANUP
 }
 
 static void task_runner(Task *task) {
@@ -45,7 +47,7 @@ static void task_runner(Task *task) {
 
   switch (task->type) {
     case TASK_TYPE_INTERVAL:
-      Timer *intervalTimer = NewTimer(task->timings.interval);
+      TaskTimer *intervalTimer = NewTimer(task->timings.interval);
       StartTimer(intervalTimer);
 
       while (!task->isCanceled) {
@@ -59,7 +61,7 @@ static void task_runner(Task *task) {
 
       break;
     case TASK_TYPE_DELAY:
-      Timer *delayTimer = NewTimer(task->timings.delay);
+      TaskTimer *delayTimer = NewTimer(task->timings.delay);
       StartTimer(delayTimer);
 
       while (!task->isCanceled) {

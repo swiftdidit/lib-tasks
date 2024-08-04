@@ -11,6 +11,12 @@
 #include "liblist.h"
 #include "libtimer.h"
 
+/* 
+  Automatically cleanup; Cancel tasks, free both tasks, threads, TaskTimerManager, and TaskManager.
+  IF FALSE: Please refer to the #CleanupTasks() function to free all resources associated with Tasks and Threads.
+*/
+#define AT_EXIT_CLEANUP false
+
 #define DEBUG_MODE false
 
 typedef enum TaskType {
@@ -39,7 +45,7 @@ typedef struct Task {
 } Task;
 
 typedef struct TaskManager {
-  TimerManager *timerManager;
+  TaskTimerManager *taskTimerManager;
 
   List *tasks;    // List<Task *>
   List *threads;  // List<pthread_t *>
@@ -47,7 +53,7 @@ typedef struct TaskManager {
 
 extern TaskManager *taskManager;
 
-static inline void cleanup(void) {
+static inline void CleanupTasks(void) {
   if (!isListEmpty(taskManager->tasks)) {
     foreach (void *i, taskManager->tasks) {
       Task *task = (Task *)i;
@@ -65,12 +71,12 @@ static inline void cleanup(void) {
   ListFreeMemory(taskManager->tasks);
   ListFreeMemory(taskManager->threads);
 
-  for (int i = 0; i < timerManager->totalTimers; i++) {
-    free(timerManager->timers[i]);
+  for (int i = 0; i < taskTimerManager->totalTimers; i++) {
+    free(taskTimerManager->timers[i]);
   }
 
-  free(timerManager->timers);
-  free(timerManager);
+  free(taskTimerManager->timers);
+  free(taskTimerManager);
 
   free(taskManager);
 
